@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsUtils, Repository } from 'typeorm';
 import { UserRequest } from './dto/user-request';
 import { User } from './user-entity';
 
@@ -27,8 +27,8 @@ export class UserService {
         }
     }
 
-    async getUsers() {
-        return await this.userRepository.find()
+    async getUsers(email:string) {
+        return await this.userRepository.findBy({email})
     }
 
     async updateUser(id: number, attr: Partial<User>) {

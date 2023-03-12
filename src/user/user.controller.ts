@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Serialize} from 'src/interceptors/serializer-interceptor';
 import { UserRequest } from './dto/user-request';
+import { UserResponse } from './dto/user-response';
 import { UserService } from './user.service';
 
 @Controller('user')
+@Serialize(UserResponse)
 export class UserController {
 
     constructor(private userService: UserService) { }
@@ -14,12 +17,14 @@ export class UserController {
     }
 
     @Get("/all")
-    getUsers() {
-        return this.userService.getUsers();
+    getUsers(@Query('email') email: string) {
+        console.log(email)
+        return this.userService.getUsers(email);
     }
 
+    @Serialize(UserResponse)
     @Get("/:id")
-    getUser(@Param() id: number) {
-        return this.userService.findUser(id)
+    getUser(@Param('id') id: string) {
+        return this.userService.findUser(Number(id))
     }
 }
